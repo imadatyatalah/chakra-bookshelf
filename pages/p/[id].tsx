@@ -44,6 +44,7 @@ const Post = ({ post }: { post: PostProps }) => {
       await fetch(`/api/publish/${post.id}`, {
         method: 'PUT',
       });
+
       await Router.push('/');
     } catch (error) {
       console.error(error);
@@ -52,7 +53,7 @@ const Post = ({ post }: { post: PostProps }) => {
 
   const handleDelete = async () => {
     try {
-      await fetch(`api/posts/${post.id}`, {
+      await fetch(`/api/posts/${post.id}`, {
         method: 'DELETE',
       });
 
@@ -97,13 +98,7 @@ const Post = ({ post }: { post: PostProps }) => {
             </Button>
           )}
           {userCanEdit && (
-            <Button
-              colorScheme="red"
-              maxW="md"
-              variant="outline"
-              onClick={handleDelete}
-              isLoading={loading}
-            >
+            <Button colorScheme="gray" maxW="md" variant="outline" onClick={handleDelete} isLoading={loading}>
               Delete Story
             </Button>
           )}
