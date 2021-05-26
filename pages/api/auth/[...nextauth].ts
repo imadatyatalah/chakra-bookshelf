@@ -1,9 +1,9 @@
 import { NextApiHandler } from 'next';
-import NextAuth from 'next-auth';
+import NextAuth, { Account, Session, User } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import prisma from 'lib/prisma';
-import { UserEmailType, UserType, ProviderAccountType, SessionType } from 'types/types';
+import { UserEmailType } from 'types/types';
 
 const options = {
   providers: [
@@ -17,11 +17,13 @@ const options = {
   secret: process.env.SECRET,
 
   callbacks: {
-    signIn: async (user: UserType, account: ProviderAccountType) => {
+    signIn: async (user: User, account: Account) => {
       // Thank you to https://github.com/imadatyatalah for helping me figure out how to properly capture user emails
 
-      if (user.email) {
-        return;
+      // Uh, for some reason account and user are returning as undefined now, which did not used to happen as of a few hours ago...
+
+      if (user?.email) {
+        return true;
       }
 
       const res = await fetch('https://api.github.com/user/emails', {
@@ -33,7 +35,7 @@ const options = {
       const userEmails: UserEmailType[] = await res.json();
 
       if (!userEmails || !userEmails.length) {
-        return;
+        return true;
       }
 
       const primaryEmail = userEmails.find((email) => email.primary);
@@ -45,15 +47,14 @@ const options = {
       });
 
       if (preventDuplicate) {
-        return;
+        return true;
       }
 
-      //@ts-expect-error I could do an early return if primaryemail is undefined to fix this but I'm lazy
-      user.email = primaryEmail?.email;
-      return;
+      user.email = primaryEmail?.email ?? '';
+      return true;
     },
 
-    session: async (session: SessionType, user: UserType) => {
+    session: async (session: Session, user: User) => {
       return Promise.resolve({
         ...session,
         user,
@@ -62,7 +63,6 @@ const options = {
   },
 };
 
-// @ts-expect-error Currently too lazy to look up the correct proptypes for all of this
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
 
 export default authHandler;

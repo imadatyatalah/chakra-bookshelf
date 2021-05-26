@@ -4,30 +4,29 @@ import { NextApiHandler } from 'next';
 const handle: NextApiHandler = async (req, res) => {
   const { id } = req.query;
 
+  const { content } = req.body;
+
   if (req.method === 'PUT') {
     const updatedBio = await prisma.bio.update({
       where: {
-        id: Number(id),
+        userId: Number(id),
       },
       data: {
-        content: req.body.bio,
+        content: content,
       },
     });
 
-    res.json(updatedBio);
-    return;
+    return res.json(updatedBio);
   }
 
   if (req.method === 'DELETE') {
     const deleteBio = await prisma.bio.delete({
       where: {
-        id: Number(id),
+        userId: Number(id),
       },
     });
 
-    res.json(deleteBio);
-
-    return;
+    return res.json(deleteBio);
   }
 
   return res.status(405).json({ message: 'Method not allowed' });

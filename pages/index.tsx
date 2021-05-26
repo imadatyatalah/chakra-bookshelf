@@ -1,10 +1,11 @@
 import prisma from 'lib/prisma';
 import Layout from 'components/Layout';
-import { PostProps } from './p/[id]';
 import Post from 'components/Post';
 import { Heading, Flex, Grid, GridItem } from '@chakra-ui/layout';
 import { useSession } from 'next-auth/client';
 import UserCard from 'components/UserCard';
+import { Spinner } from '@chakra-ui/spinner';
+import { PostWithAuthor } from 'types/types';
 
 // TODO: Eventually implement pagination. Not sure if I want to do offset or cursor based.
 export const getServerSideProps = async () => {
@@ -25,8 +26,19 @@ export const getServerSideProps = async () => {
   };
 };
 
-const App = ({ feed }: { feed: PostProps[] }) => {
-  const [session] = useSession();
+const App = ({ feed }: { feed: PostWithAuthor[] }) => {
+  const [session, loading] = useSession();
+
+  if (loading) {
+    return (
+      <>
+        <Layout>
+          <Spinner />
+        </Layout>
+      </>
+    );
+  }
+
   return (
     <>
       <Layout>

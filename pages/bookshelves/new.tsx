@@ -1,39 +1,37 @@
 import Layout from 'components/Layout';
-import { FormControl, FormLabel, Heading, Input, Button, Textarea, Flex, useColorModeValue } from '@chakra-ui/react';
+import { FormControl, FormLabel, Heading, Input, Button, Flex, useColorModeValue } from '@chakra-ui/react';
 import { SyntheticEvent, useState } from 'react';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { useSession } from 'next-auth/client';
 
-const Create = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+// Page for creating bookshelf
+const CreateBookshelf = () => {
+  const [name, setName] = useState('');
 
   const [, loading] = useSession();
 
-  const router = useRouter();
-
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    try {
-      const body = { title, content };
 
-      await fetch('/api/posts', {
+    try {
+      const body = { name };
+
+      await fetch('/api/bookshelves', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-
-      // Navigate to drafts page once you create a draft
-      await router.push('/drafts');
     } catch (error) {
       console.error(error);
     }
+
+    Router.push('/');
   };
 
   return (
     <Layout>
       <Heading size="lg" as="h1" mb={3}>
-        What's on your mind?
+        Let's make a new bookshelf!
       </Heading>
       <Flex
         direction="column"
@@ -49,7 +47,7 @@ const Create = () => {
       >
         <FormControl id="title" mb={6}>
           <FormLabel pl={3} fontSize="xx-large">
-            Title
+            Name
           </FormLabel>
           <Input
             borderRadius={0}
@@ -57,27 +55,13 @@ const Create = () => {
             borderLeftColor="white"
             p={4}
             variant="unstyled"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             _hover={{ borderLeftColor: 'base.300' }}
             _focus={{ borderLeftColor: 'base.500' }}
             _active={{ borderLeftColor: 'base.500' }}
             placeholder="Title"
           />
-        </FormControl>
-
-        <FormControl id="content" mb={6}>
-          <FormLabel pl={3} fontSize="xx-large">
-            Body
-          </FormLabel>
-          <Textarea
-            minH="60vh"
-            p={4}
-            variant="unstyled"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Share your thoughts..."
-          ></Textarea>
         </FormControl>
 
         <Button
@@ -86,14 +70,14 @@ const Create = () => {
           _hover={{ bg: 'main.dark' }}
           type="submit"
           maxW="lg"
-          onClick={handleSubmit}
+          onClick={(e) => handleSubmit(e)}
           isLoading={loading}
         >
-          Create Draft
+          Create Bookshelf
         </Button>
       </Flex>
     </Layout>
   );
 };
 
-export default Create;
+export default CreateBookshelf;

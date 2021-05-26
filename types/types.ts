@@ -1,25 +1,4 @@
-export type ProviderAccountType = {
-  provider: string;
-  type: string;
-  id: number;
-  accessToken: string;
-  accessTokenExpires?: string | null;
-  refreshToken?: string;
-  idToken?: string;
-  access_token: string;
-  scope: string;
-  token_type: string;
-};
-
-export type UserType = {
-  id: number;
-  name: string;
-  email: string;
-  emailVerified?: string | null;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Prisma } from '@prisma/client';
 
 export type UserEmailType = {
   email: string;
@@ -28,8 +7,30 @@ export type UserEmailType = {
   visibility: string;
 };
 
-export type SessionType = {
-  user: UserType;
-  accessToken: string;
-  expires: string | Date;
-};
+const bookshelfWithBooks = Prisma.validator<Prisma.BookshelfArgs>()({
+  include: {
+    books: {
+      include: {
+        author: true,
+      },
+    },
+  },
+});
+
+export type BookshelfWithBooks = Prisma.BookshelfGetPayload<typeof bookshelfWithBooks>;
+
+const bookWithAuthor = Prisma.validator<Prisma.BookArgs>()({
+  include: {
+    author: true,
+  },
+});
+
+export type BookWithAuthor = Prisma.BookGetPayload<typeof bookWithAuthor>;
+
+const postWithAuthor = Prisma.validator<Prisma.PostArgs>()({
+  include: {
+    author: true,
+  },
+});
+
+export type PostWithAuthor = Prisma.PostGetPayload<typeof postWithAuthor>;
