@@ -13,7 +13,13 @@ const NavBar = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue('base.inverted', 'base')} mb={12} px={{ base: 6, lg: 12 }} boxShadow="md">
+      <Box
+        bg={useColorModeValue('base.inverted', 'base')}
+        mb={12}
+        px={{ base: 6, lg: 12 }}
+        boxShadow="md"
+        position="relative"
+      >
         <Flex height={16} alignItems="center" justifyContent="space-between">
           {/* Hamburger dropdown for mobile display */}
           <IconButton
@@ -24,10 +30,13 @@ const NavBar = () => {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={2} alignItems="center">
-            <HStack as="nav" spacing={2} display={{ base: 'none', md: 'flex' }}>
+            <HStack as="nav" spacing={2} display={{ base: 'none', md: 'flex' }} gridGap={4}>
               <NavLink to="/">Timeline</NavLink>
               <NavLink to="/drafts" hoverColor="rainbow.pink">
                 Drafts
+              </NavLink>
+              <NavLink to="/books/list" hoverColor="rainbow.yellow">
+                Books
               </NavLink>
               <NavLink to="/posts/new" hoverColor="rainbow.green">
                 Write a post
@@ -55,6 +64,9 @@ const NavBar = () => {
                   <NavLink to="/">Timeline</NavLink>
                   <NavLink to="/drafts" hoverColor="rainbow.pink">
                     Drafts
+                  </NavLink>
+                  <NavLink to="/books/list" hoverColor="rainbow.yellow">
+                    Books
                   </NavLink>
                   <NavLink to="/posts/new" hoverColor="rainbow.green">
                     Write a post

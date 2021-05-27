@@ -3,8 +3,9 @@ import prisma from 'lib/prisma';
 import { NextApiHandler } from 'next';
 
 // POST request to create a new Bookshelf
+// TODO: Will add user ability to add books to shelf oncreation soon
 const handle: NextApiHandler = async (req, res) => {
-  const { name } = req.body;
+  const { name, bookIds } = req.body;
 
   // Confirm if user is logged in:
   const session = await getSession({ req });
@@ -14,6 +15,10 @@ const handle: NextApiHandler = async (req, res) => {
   }
 
   const defaultConnections = [{ id: 1 }, { id: 2 }];
+
+  console.log(bookIds, 'bookIds');
+
+  // const formattedBooks = [];
 
   const newBookshelf = await prisma.bookshelf.create({
     data: {
